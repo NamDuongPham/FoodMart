@@ -1,0 +1,47 @@
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  > .ant-tabs-nav
+  .ant-tabs-nav-wrap,
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  > div
+  > .ant-tabs-nav
+  .ant-tabs-nav-wrap {
+  justify-content: flex-Start;
+}
+
+/* Định kiểu cho tab đang được chọn */
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  .ant-tabs-tab.ant-tabs-tab-active
+  .ant-tabs-tab-btn {
+  color: #E85353;
+  text-shadow: 0 0 0.25px currentcolor;
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  .ant-tabs-tab
+  .ant-tabs-tab-btn {
+  color: #395542;
+  font-size: 20px;
+  text-shadow: 0 0 0.25px currentcolor;
+}
+/* Định kiểu cho dấu gạch dưới của tab đang được chọn */
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs .ant-tabs-ink-bar {
+  position: absolute;
+  background: #ac845c;
+
+  pointer-events: none;
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs-top
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs-bottom
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs-top
+  > div
+  > .ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs-bottom
+  > div
+  > .ant-tabs-nav::before {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-bottom: 0px solid #f0f0f0;
+  content: "";
+}

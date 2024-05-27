@@ -1,0 +1,34 @@
+.SideMenuAndPageContent{
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: rgba(0, 0, 0, 0.05) ;
+    height: 100vh;
+}
+.SideMenu{
+    height: 100%;
+}
+/* .SideMenuVertical{
+    height: 100%;
+} */
+.PageContent{
+    padding-left: 12px;
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light .ant-menu-item, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light>.ant-menu .ant-menu-item, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light .ant-menu-submenu-title, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light>.ant-menu .ant-menu-submenu-title {
+    color: rgb(255 255 255 / 88%);
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light>.ant-menu .ant-menu-item-selected {
+    color: #1677ff;
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light.ant-menu-root.ant-menu-inline, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light>.ant-menu.ant-menu-root.ant-menu-inline, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light.ant-menu-root.ant-menu-vertical, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light>.ant-menu.ant-menu-root.ant-menu-vertical {
+    border:none
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light .ant-menu-submenu-selected >.ant-menu-submenu-title, :where(.css-dev-only-do-not-override-1ae8k9u).ant-menu-light>.ant-menu .ant-menu-submenu-selected >.ant-menu-submenu-title {
+    color: white;
+}
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-select-single.ant-select-show-arrow .ant-select-selection-item, :where(.css-dev-only-do-not-override-1ae8k9u).ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
+    padding-inline-end: 18px;
+    font-size: 20px;
+    color: #515c6b;
+}

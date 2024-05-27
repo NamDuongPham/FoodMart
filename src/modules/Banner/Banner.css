@@ -1,0 +1,21 @@
+.slick-dots li button {
+    background-color: gold !important;
+    border-radius: 50% !important;
+    width: 15px !important;
+    height: 15px !important;
+    position: relative !important;
+    margin: auto !important;
+    padding: auto !important; 
+  
+  }
+  :where(.css-dev-only-do-not-override-1ae8k9u).ant-carousel .slick-slide{
+    display: block !important;
+    top: -40px !important;
+  }
+  :where(.css-dev-only-do-not-override-1ae8k9u).ant-carousel .slick-slider {
+    position: relative;
+    border-radius: 12px;
+  }
+  :where(.css-dev-only-do-not-override-1ae8k9u).ant-carousel{
+    width: 1010px
+  }

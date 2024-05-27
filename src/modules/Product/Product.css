@@ -1,0 +1,25 @@
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  > .ant-tabs-nav
+  .ant-tabs-nav-wrap,
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  > div
+  > .ant-tabs-nav
+  .ant-tabs-nav-wrap {
+  justify-content: flex-end;
+}
+
+/* Định kiểu cho tab đang được chọn */
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs
+  .ant-tabs-tab.ant-tabs-tab-active
+  .ant-tabs-tab-btn {
+  color: #222;
+  text-shadow: 0 0 0.25px currentcolor;
+}
+
+/* Định kiểu cho dấu gạch dưới của tab đang được chọn */
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-tabs .ant-tabs-ink-bar {
+  position: absolute;
+  background: linear-gradient(#e85353, #be1515);
+
+  pointer-events: none;
+}
