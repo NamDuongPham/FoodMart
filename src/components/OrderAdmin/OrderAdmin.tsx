@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { db } from "@/firebase";
 import type { TableProps } from "antd";
-import { Spin, Switch, Table, Tag, notification } from "antd";
+import { Card, Spin, Switch, Table, Tag, notification } from "antd";
 import { format } from "date-fns";
+import dayjs from "dayjs";
 import { get, ref, update } from "firebase/database";
 import { useEffect, useState } from "react";
+import { FaRegCalendarMinus } from "react-icons/fa";
 import { FcCancel } from "react-icons/fc";
 import { GrFormView } from "react-icons/gr";
 import { ImSpinner11 } from "react-icons/im";
@@ -26,6 +28,7 @@ function OrderAdmin() {
   const navigate = useNavigate();
   const [order, setOrder] = useState<DataType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const fetchOrder = async () => {
     setIsLoading(true);
     try {
@@ -85,6 +88,15 @@ function OrderAdmin() {
       title: "Accept",
       dataIndex: "orderAccepted",
       key: "",
+      onFilter: (value, record) => {
+        if (value === "true") {
+          return record.orderAccepted;
+        } else {
+          return !record.orderAccepted;
+        }
+      },
+      filterSearch: false,
+
       render: (_, record) => (
         <Switch
           className={`${
@@ -111,16 +123,29 @@ function OrderAdmin() {
       dataIndex: "totalPrice",
       key: "",
       render: (text) => (
-        <p className="text-center font-semibold text-[15px]">{text} đ</p>
+        <p className="text-center font-semibold text-[15px]">
+          {Number(text).toLocaleString("vi-VN") + "đ"}
+        </p>
       ),
     },
     {
       title: "Payment status",
       dataIndex: "paymentStatus",
       key: "paymentStatus",
+
       render: (paymentStatus) => (
         <div className="flex justify-center">
-          <Tag color={paymentStatus === "banking" ? "green" : "volcano"}>
+          <Tag
+            color={
+              paymentStatus === "MOMO"
+                ? "#D82D8B"
+                : paymentStatus === "ZALOPAY"
+                ? "#0068ff"
+                : paymentStatus === "COD"
+                ? "#FF7A45"
+                : "volcano"
+            }
+          >
             {paymentStatus}
           </Tag>
         </div>
@@ -145,6 +170,7 @@ function OrderAdmin() {
       title: "Date",
       dataIndex: "currentTime",
       key: "",
+      sorter: (a, b) => dayjs(a.date).unix() - dayjs(b.date).unix(),
       render: (date) => (
         <div className="text-center font-semibold text-[15px]">
           <span className="text-center font-medium text-[15px]">
@@ -219,14 +245,42 @@ function OrderAdmin() {
       console.error("Error updating delivery status: ", error);
     }
   };
-
+  const orderAccept = order.filter((item) => item.orderAccepted === false);
   return (
     <div className="md:!p-[26px]">
       <div
-        className="card no-hover flex flex-col gap-5 !p-5 md:!p-[26px] lg:!py-5 lg:flex-row
+        className="card no-hover flex justify-between gap-5 !p-5 md:!p-[26px] lg:!py-5 lg:flex-row
            lg:items-center lg:gap-4 bg-white  rounded-lg mb-3"
       >
-        <h1 className="flex-1 text-center lg:text-left">Order</h1>
+        <h1 className=" text-center lg:text-left">Order</h1>
+        <Card
+          className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#1CC88A] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
+          loading={isLoading}
+        >
+          <div>
+            <h2 className="text-[#B589DF] text-[11px] leading-[17px] font-bold">
+              TOTAL ORDERS
+            </h2>
+            <h1 className="text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]">
+              {order.length} orders
+            </h1>
+          </div>
+          <FaRegCalendarMinus fontSize={28} color="" />
+        </Card>
+        <Card
+          className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#4E73DF] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
+          loading={isLoading}
+        >
+          <div>
+            <h2 className="text-[#B589DF] text-[11px] leading-[17px] font-bold">
+              WAIT FOR ACCEPTED
+            </h2>
+            <h1 className="text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]">
+              {orderAccept.length} orders
+            </h1>
+          </div>
+          <FaRegCalendarMinus fontSize={28} color="" />
+        </Card>
         <button
           className="group hidden w-fit xl:flex items-center gap-2 font-heading font-semibold
                   text-header text-sm"

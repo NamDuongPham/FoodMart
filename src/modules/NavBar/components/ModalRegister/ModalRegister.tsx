@@ -14,7 +14,7 @@ function ModalRegister({ isOpenRegister, setIsOpenRegister }: IProps) {
         footer={<></>}
       >
         <>
-          <Register setIsOpen={setIsOpenRegister} />
+          <Register setIsOpenRegister={setIsOpenRegister} />
           
         </>
       </ModalCustom>

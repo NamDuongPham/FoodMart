@@ -1,6 +1,8 @@
+import { db } from "@/firebase";
 import { RootStatesType } from "@/stores";
 import { resetUser } from "@/stores/slices/UserSlice";
-import { Drawer } from "antd";
+import { Drawer, notification } from "antd";
+import { onValue, ref } from "firebase/database";
 import { useCallback, useEffect, useState } from "react";
 import { BsFillCartFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,9 +12,9 @@ import ShowCart from "../../../Cart/ShowCart";
 import ModalLogin from "../ModalLogin/ModalLogin";
 import ModalRegister from "../ModalRegister/ModalRegister";
 import UserItem from "./UserItem";
-import { db } from "@/firebase";
-import { onValue, ref } from "firebase/database";
-
+import logo from "@/assets/images/placeholder.jpg";
+import logoUser from "@/assets/images/user.png";
+import { resetSearch } from "@/stores/slices/SearchSlice";
 interface DataType {
   key: React.Key;
   foodName: string;
@@ -33,7 +35,6 @@ interface DataType {
 }
 function Usermenu() {
   const navigate = useNavigate();
-
   const userStore = useSelector((state: RootStatesType) => state.user);
   const [isOpenRegister, setIsOpenRegister] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -46,16 +47,22 @@ function Usermenu() {
 
   const logOut = () => {
     dispatch(resetUser());
+    dispatch(resetSearch());
+    notification.success({
+      message: "log out success!",
+    });
   };
   const handleAccount = () => {
     navigate(SITE_MAP.ACCOUNT.url);
   };
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cartItem, setCartItem] = useState<DataType[]>([]);
   // const [isAuth, setIsAuth] = useState<boolean>(false);
   // const currentUser = auth.currentUser;
   // console.log(auth);
-
+  // console.log(cartItem);
+  
   useEffect(() => {
     const cartItemsRef = ref(db, `customer/${userStore.uid}/CartItems`);
     const unsubscribe = onValue(cartItemsRef, (snapshot) => {
@@ -74,8 +81,7 @@ function Usermenu() {
       setCartItemsCount(totalQuantity);
     });
     return () => unsubscribe();
-  }, [db]);
-  console.log(cartItem);
+  }, []);
 
   return (
     <>
@@ -98,7 +104,7 @@ function Usermenu() {
           >
             {userStore.token ? (
               <img
-                src="/images/user.png"
+                src={logoUser}
                 alt=""
                 className="rounded-full"
                 height="30"
@@ -106,7 +112,7 @@ function Usermenu() {
               />
             ) : (
               <img
-                src="/images/placeholder.jpg"
+                src={logo}
                 alt=""
                 className="rounded-full"
                 height="30"
@@ -157,7 +163,11 @@ function Usermenu() {
                 onClick={() => setIsOpenCart(true)}
               />
             </div>
-            <Drawer size="large" open={isOpenCart} onClose={()=>setIsOpenCart(false)}>
+            <Drawer
+              size="large"
+              open={isOpenCart}
+              onClose={() => setIsOpenCart(false)}
+            >
               <ShowCart />
             </Drawer>
 

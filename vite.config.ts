@@ -5,6 +5,7 @@ const SRC_DIR = path.resolve(__dirname, "./src");
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base:"/",
   resolve: {
     alias: {
       "@": SRC_DIR,

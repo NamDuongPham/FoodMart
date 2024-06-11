@@ -101,7 +101,7 @@ function Rating() {
         >
           <div className="flex flex-col gap-2 text-[#123829] text-[16px] ">
             <div className="flex gap-2">
-              <BsFillStarFill color="#123829" /> <p>{averageRating} out of 5</p>
+              <BsFillStarFill color="#123829" /> <p>{averageRating.toFixed(1)} out of 5</p>
             </div>
             <div>Based on {totalReviews} review</div>
             {/* đổi số 1 review thành cout tổng review */}

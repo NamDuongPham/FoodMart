@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { SITE_MAP } from "../../../../constants/site-map";
+import imageLogo from "@/assets/images/groceries.png";
 function Logo() {
   const navigate = useNavigate();
   const handleClickToHome = () => {
@@ -9,7 +10,7 @@ function Logo() {
     <div className="flex flex-row gap-1">
       <div>
         <img
-          src="images/groceries.png"
+          src={imageLogo}
           alt="logo"
           onClick={handleClickToHome}
           className="cursor-pointer"

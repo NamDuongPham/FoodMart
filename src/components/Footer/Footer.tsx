@@ -6,7 +6,7 @@ import { MdOutlineDiscount } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { SITE_MAP } from "../../constants/site-map";
-
+import imageLogo  from "@/assets/images/groceries.png"
 function Footer() {
   const navigate = useNavigate();
   const handleClickToHome = () => {
@@ -67,7 +67,7 @@ function Footer() {
             <div className="flex flex-col">
               <div>
                 <img
-                  src="/images/logo.png"
+                  src={imageLogo}
                   alt="logo"
                   onClick={() => {
                     handleClickToHome();
@@ -103,11 +103,11 @@ function Footer() {
                   Home
                 </li>
                 <li className="hover:bg-gradient-to-r from-[#E85353] to-[#BE1515] hover:text-transparent hover:bg-clip-text">
-                  About
+                 About
                 </li>
 
                 <li className="hover:bg-gradient-to-r from-[#E85353] to-[#BE1515] hover:text-transparent hover:bg-clip-text">
-                  Service
+                  Shop
                 </li>
                 <li className="hover:bg-gradient-to-r from-[#E85353] to-[#BE1515] hover:text-transparent hover:bg-clip-text">
                   Contact

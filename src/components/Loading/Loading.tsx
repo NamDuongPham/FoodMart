@@ -1,10 +1,10 @@
 import styled from "styled-components";
-
+import imageSpin  from "@/assets/images/spin.png"
 function Loading() {
   return (
     <DivCustom className="ttloader bg-[#fff1d8] w-[100%] h-[100vh]">
       <span className="rotating load-open w-[100%] h-[100%] flex justify-center items-center">
-        <img src="../images/spin.png" alt="spin load"/>
+        <img src={imageSpin} alt="spin load"/>
       </span>
     </DivCustom>
   );

@@ -4,9 +4,10 @@ import { ref, set } from "firebase/database";
 import { ChangeEvent, useState } from "react";
 import { styled } from "styled-components";
 import { auth, db } from "../../firebase";
+import ModalLogin from "../NavBar/components/ModalLogin/ModalLogin";
 
 interface IProps {
-  setIsOpen?: (open: boolean) => void;
+  setIsOpenRegister: (open: boolean) => void;
 }
 // interface Customer {
 //   nameCustomer: string;
@@ -16,12 +17,17 @@ interface IProps {
 //   phoneNumberCustomer: string;
 // }
 function Register(props: IProps) {
+  const { setIsOpenRegister } = props;
   //const dispatch = useDispatch();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [email, setEmail] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [password, setPassword] = useState("");
-
+  const [isOpenModalLogin, setIsOpenModalLogin] = useState(false);
+  const openModalRegister = () => {
+    setIsOpenModalLogin(true);
+    setIsOpenRegister(false);
+  };
   const handleRegister = async () => {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -29,11 +35,11 @@ function Register(props: IProps) {
       password
     );
     const user = userCredential.user;
-    props.setIsOpen && props.setIsOpen(false);
+    props.setIsOpenRegister && props.setIsOpenRegister(false);
     console.log(user);
     //dispatch(setUser(user));
     try {
-      const newDocRef = (ref(db, `customer/${user.uid}`));
+      const newDocRef = ref(db, `customer/${user.uid}`);
       await set(newDocRef, {
         nameCustomer: "",
         addressCustomer: "",
@@ -103,6 +109,28 @@ function Register(props: IProps) {
             REGISTER
           </Button>
         </Form.Item>
+        <div
+          className="
+      text-neutral-500 text-center mt-4 font-light text-xl"
+        >
+          <p>
+            Have account FooodMart?
+            <span
+              className="
+              text-neutral-800
+              cursor-pointer 
+              hover:underline
+            "
+              onClick={openModalRegister}
+            >
+              Login
+            </span>
+          </p>
+        </div>
+        <ModalLogin
+          isOpen={isOpenModalLogin} // Step 4
+          setIsOpen={setIsOpenModalLogin} // Step 4
+        />
       </FormContainer>
     </div>
   );

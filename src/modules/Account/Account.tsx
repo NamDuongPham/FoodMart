@@ -4,14 +4,24 @@ import { get, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import Info from "../Info/Info";
 import Order from "../Order/Order";
+import { useDispatch } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+import { resetUser } from "@/stores/slices/UserSlice";
+import { useNavigate } from "react-router-dom";
+import { SITE_MAP } from "@/constants/site-map";
 interface Customer {
   addressCustomer: string;
   emailCustomer: string;
   nameCustomer: string;
-  phoneCustomer: string;
+  phoneNumberCustomer: string;
 }
 function Account() {
-  const [customerData, setCustomerData] = useState<Customer[]>([]);
+  const [customerData, setCustomerData] = useState<Customer>({
+    addressCustomer: "",
+    emailCustomer: "",
+    nameCustomer: "",
+    phoneNumberCustomer: ""
+  });
   const fetchCustomerData = async () => {
     const currentUser = auth.currentUser;
     try {
@@ -26,6 +36,28 @@ function Account() {
       console.error("Error fetching customer data: ", error);
     }
   };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Người dùng đã đăng nhập
+        user.getIdToken(true).catch((error) => {
+          // Xử lý lỗi xác thực khi người dùng đổi mật khẩu
+          console.error("User session expired:", error);
+          dispatch(resetUser()); // Đăng xuất người dùng
+          notification.info({
+            message: "Login session expired",
+          });
+          navigate(SITE_MAP.HOME.url);
+        });
+      } else {
+        // Người dùng đã đăng xuất
+      }
+    });
+
+    return unsubscribe;
+  }, [dispatch]);
   useEffect(() => {
     fetchCustomerData();
   }, []);
@@ -73,7 +105,7 @@ function Account() {
                 />
                 <Info
                   label="Phone"
-                  value={customerData?.phoneCustomer}
+                  value={customerData?.phoneNumberCustomer}
                   updateValue={(newValue: string) =>
                     handleUpdateValue("phoneNumberCustomer", newValue)
                   }

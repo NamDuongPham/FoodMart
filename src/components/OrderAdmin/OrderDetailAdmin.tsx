@@ -21,7 +21,21 @@ interface DataType {
 function OrderDetailAdmin() {
   const { id } = useParams();
 
-  const [order, setOrder] = useState<DataType[]>([]);
+  const [order, setOrder] = useState<DataType>({
+    key: "",
+  customerId: "",
+  customerName: "",
+  address: "",
+  foodImage: [],
+  foodNames: [],
+  foodPrices: [],
+  foodQuantities: [],
+  note: "",
+  totalPrice: 0,
+  phoneNumber: 0,
+  paymentStatus: "",
+  deliveryStatus: "",
+  });
   // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -41,7 +55,7 @@ function OrderDetailAdmin() {
     };
     fetchOrder();
   }, [id]);
-  console.log(order);
+  console.log(order.customerId);
 
   return (
     <div className="container mx-auto">
@@ -67,7 +81,7 @@ function OrderDetailAdmin() {
                   </div>
                   <div className="flex flex-col items-start justify-center gap-3">
                     <p className="font-bold text-xl">
-                     {order.foodPrices[index]} đ
+                      {order.foodPrices[index]} đ
                     </p>
                     <p className="text-xl">
                       Quantity: {order.foodQuantities[index]}
@@ -85,7 +99,6 @@ function OrderDetailAdmin() {
             </div>
             {/*  */}
             <div>
-             
               <div className=""></div>
               <div className="flex justify-between gap-3">
                 <p className="text-lg font-bold">Total:</p>

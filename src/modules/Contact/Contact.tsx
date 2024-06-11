@@ -111,6 +111,7 @@ function Contact() {
                     {
                       required: true,
                       message: "Please input your number phone!",
+                      pattern: /^[0-9]+$/,
                     },
                   ]}
                 >
@@ -127,6 +128,7 @@ function Contact() {
                     {
                       required: true,
                       message: "Please input your email!",
+                      type: "email",
                     },
                   ]}
                 >
@@ -152,7 +154,7 @@ function Contact() {
                 </Form.Item>
                 <Form.Item>
                   <Button
-                    className="bg-[#e85353] relative top-[170px] rounded-[30px] w-36 h-12 text-center"
+                    className="bg-[#e85353] relative top-[170px] rounded-[30px] w-36 h-12 text-center text-white font-semibold"
                     type="primary"
                     htmlType="submit"
                     disabled={!phone.trim() && !name.trim()}

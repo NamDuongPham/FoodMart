@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import reducer from "./reducer";
 
 export interface UserType {
-  uid:string
+  uid: string;
   email: string;
   name: string;
   phone: string;
@@ -11,7 +11,7 @@ export interface UserType {
 }
 
 const initState = {
-  uid:"",
+  uid: "",
   email: "",
   name: "",
   phone: "",

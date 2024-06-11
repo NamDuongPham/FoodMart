@@ -18,7 +18,7 @@ interface DataType {
   typeOfDishId: string;
   bestSeller: boolean;
   trending: boolean;
-  discount: number;
+  foodDiscount: string;
   inStock: boolean;
   foodQuantity?: number;
   createAt?: "";
@@ -89,7 +89,7 @@ function ShowCart() {
       // Tính tổng giá trị của tất cả các sản phẩm
       const total = cartItemTemp.reduce((acc, item) => {
         const discountedPrice =
-          (Number(item.foodPrice) * (100 - item.discount)) / 100;
+          (Number(item.foodPrice) * (100 - (Number(item.foodDiscount) || 0))) / 100;
         return acc + discountedPrice;
       }, 0);
       setTotalPrice(total);
@@ -98,7 +98,7 @@ function ShowCart() {
   };
   useEffect(() => {
     fetchCartData();
-  }, [cartItems]);
+  }, [db]);
   const slicedCartItems = cartItems.slice(0, 3);
   const removeCartItem = async (key: string) => {
     const currentUser = auth.currentUser;
@@ -122,6 +122,7 @@ function ShowCart() {
       }
     }
   };
+
   return (
     <div>
       <div>
@@ -162,7 +163,10 @@ function ShowCart() {
                     </div>
                   </div>
                   <p className="text-[20px] text-[#123829] font-light">
-                    {(Number(item.foodPrice) * (100 - item.discount)) / 100} đ
+                    {(Number(item.foodPrice) *
+                      (100 - (Number(item.foodDiscount) || 0))) /
+                      100}
+                    đ
                   </p>
                 </div>
                 <div className="flex flex-col justify-end cursor-pointer hover:text-red-500">
@@ -289,8 +293,13 @@ function ShowCart() {
               <p className="text-[25px] ">Total</p>
               <p className="text-[25px] ">{totalPrice} đ</p>
             </div>
-            <button className="bg-[#123829] mx-[10px] text-[#fff1d8] font-semibold rounded-[30px] hover:bg-[#E85353] hover:text-white hover:border-[#E85353]">
-              Proceed to Checkout
+            <button className="bg-[#123829] mx-[10px] rounded-[30px] hover:bg-[#E85353]  hover:border-[#E85353]">
+              <Link
+                to={SITE_MAP.CHECKOUT.url}
+                className="text-[#fff1d8] font-semibold hover:text-white"
+              >
+                Proceed to Checkout
+              </Link>
             </button>
             <Link to={SITE_MAP.CART.url} className="flex gap-2 justify-center">
               View Cart <FaLongArrowAltRight />

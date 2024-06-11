@@ -29,9 +29,11 @@ function Product() {
         const snapshot = await get(dbRef);
         if (snapshot.exists()) {
           const data = snapshot.val();
-          const products = Object.keys(data).map((key) => {
+          const products = Object.keys(data)
+          .map((key) => {
             return Object.assign({ key: key }, data[key]) as DataType;
-          });
+          })
+          .filter((product) => product.inStock === true);
           setProduct(products);
         } else throw new Error("No foods found!");
       } catch (error) {

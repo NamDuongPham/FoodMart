@@ -148,7 +148,7 @@ const PieComponent = ({ order }: PieComponentProps) => {
     const sortedTypeOfDishCount = Object.entries(typeOfDishCount).sort(
       ([, countA], [, countB]) => countB - countA
     );
-     console.log(sortedTypeOfDishCount);
+    //  console.log(sortedTypeOfDishCount);
 
     sortedTypeOfDishCount.forEach(([typeId, count], index) => {
       typePercentages[typeId] = (count / totalProducts) * 100;
@@ -165,7 +165,7 @@ const PieComponent = ({ order }: PieComponentProps) => {
     fetchType();
     fetchFood();
   }, [db]);
-console.log(typePercentages);
+// console.log(typePercentages);
 
 // {a: '1', b:'2', c: '3'}
 // result : [{a : '1'}]

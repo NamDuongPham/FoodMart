@@ -14,17 +14,12 @@ interface DataType {
   foodImage: string;
   foodIngredient: string;
   foodPrice: string;
-  categoryId: string;
-  typeOfDishId: string;
-  bestSeller: boolean;
-  trending: boolean;
-  discount: number;
-  inStock: boolean;
+  category: string;
+  typeOfDish: string;
+  foodDiscount: string;
   foodQuantity?: number;
-  createAt?: "";
-  startAt?: "";
-  endAt?: "";
 }
+
 function Cart() {
   useTitle("Giỏ hàng");
   const [cartItems, setCartItems] = useState<DataType[]>([]);
@@ -82,34 +77,34 @@ function Cart() {
     }
   };
   const userStore = useSelector((state: RootStatesType) => state.user);
-  const fetchCartData = async () => {
-    const currentUser = auth.currentUser;
-    if (userStore.token) {
-      const cartRef = ref(db, `customer/${currentUser?.uid}/CartItems`);
-      const snapshot = await get(cartRef);
-      if (snapshot.exists()) {
-        const cartData = snapshot.val();
-        const cartArray = Object.keys(cartData).map((key) => {
-          return Object.assign({ key: key }, cartData[key]) as DataType;
-        });
 
-        setCartItems(cartArray);
-
-        // Tính tổng giá trị của tất cả các sản phẩm
-        const total = cartArray.reduce((acc, item) => {
-          const discountedPrice =
-            (Number(item.foodPrice) * (100 - item.discount)) / 100;
-          return acc + discountedPrice;
-        }, 0);
-        setTotalPrice(total);
-      }
-    } else {
-      notification.info({
-        message: "Người dùng chưa đăng nhập, không thể thêm vào giỏ hàng.",
-      });
-    }
-  };
   useEffect(() => {
+    const fetchCartData = async () => {
+      if (userStore.token) {
+        const cartRef = ref(db, `customer/${userStore?.uid}/CartItems`);
+        const snapshot = await get(cartRef);
+        if (snapshot.exists()) {
+          const cartData = snapshot.val();
+          const cartArray = Object.keys(cartData).map((key) => {
+            return Object.assign({ key: key }, cartData[key]) as DataType;
+          });
+
+          setCartItems(cartArray);
+          // Tính tổng giá trị của tất cả các sản phẩm
+          const total = cartArray.reduce((acc, item) => {
+            const discountedPrice =
+              (Number(item.foodPrice) * (100 - Number(item.foodDiscount))) /
+              100;
+            return acc + discountedPrice;
+          }, 0);
+          setTotalPrice(total);
+        }
+      } else {
+        notification.info({
+          message: "Người dùng chưa đăng nhập, không thể thêm vào giỏ hàng.",
+        });
+      }
+    };
     fetchCartData();
   }, [userStore.token]);
 
@@ -188,7 +183,7 @@ function Cart() {
                           <td className="whitespace-nowrap px-6 py-4 font-semibold">
                             <p className="relative bottom-8 ">
                               {(Number(item.foodPrice) *
-                                (100 - item.discount)) /
+                                (100 - Number(item.foodDiscount))) /
                                 100}{" "}
                               đ
                             </p>
@@ -215,13 +210,13 @@ function Cart() {
                             </div>
                           </td>
                           <td className="whitespace-nowrap px-6 py-4">
-                            <div className="flex items-center relative bottom-8">
+                            <div className="flex justify-between items-center relative bottom-8">
                               <div className="font-bold">
                                 {item &&
                                   item.foodQuantity &&
                                   item.foodQuantity *
                                     ((Number(item.foodPrice) *
-                                      (100 - item.discount)) /
+                                      (100 - Number(item.foodDiscount))) /
                                       100)}
                               </div>
                               <MdOutlineDelete

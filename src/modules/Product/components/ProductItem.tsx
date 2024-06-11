@@ -1,21 +1,26 @@
 import { auth, db } from "@/firebase";
+import { RootStatesType } from "@/stores";
+import { Product } from "@/types/Product";
 import { notification } from "antd";
 import "aos/dist/aos.css";
 import { get, ref, set, update } from "firebase/database";
-import { BsStarFill } from "react-icons/bs";
-import { FaShoppingCart } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { Product } from "../../../types/Product";
+import { FaShareAlt, FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { RootStatesType } from "@/stores";
+import { useNavigate } from "react-router-dom";
+import { FacebookShareButton } from "react-share";
+
 interface IProduct {
   product: Product;
 }
+
 function ProductItem(props: IProduct) {
   const navigate = useNavigate();
   const { product } = props;
 
-  const discount = ((100 - product.discount) / 100) * Number(product.foodPrice);
+  const discount = Math.round(
+    ((100 - product.discount) / 100) * Number(product.foodPrice)
+  );
+  const discountPrice = discount.toLocaleString("vi-VN") + "đ";
   const handleProductClick = async (productId: string) => {
     try {
       const currentTimestamp = Date.now();
@@ -69,7 +74,7 @@ function ProductItem(props: IProduct) {
     }
   };
   const userStore = useSelector((state: RootStatesType) => state.user);
- 
+
   const handleAddToCart = async (product: Product) => {
     try {
       const currentUser = auth.currentUser;
@@ -77,7 +82,14 @@ function ProductItem(props: IProduct) {
         const cartItemsRef = ref(db, `customer/${currentUser?.uid}/CartItems`);
         const cartItemsSnapshot = await get(cartItemsRef);
         const cartItem = {
-          ...product,
+          foodName: product.foodName,
+          foodImage: product.foodImage,
+          foodPrice: product.foodPrice,
+          foodDiscount: product.discount,
+          category: product.categoryId,
+          typeOfDish: product.typeOfDishId,
+          foodDescription: product.foodDescription,
+          foodIngredient: product.foodIngredient,
           foodQuantity: 1,
         };
         if (!cartItemsSnapshot.exists()) {
@@ -105,7 +117,7 @@ function ProductItem(props: IProduct) {
             };
             await update(cartItemsRef, updatedCartItems);
             notification.success({
-              message: "Add succes please check cart!",
+              message: "Add success, please check cart!",
             });
           } else {
             // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
@@ -115,7 +127,7 @@ function ProductItem(props: IProduct) {
             };
             await update(cartItemsRef, updatedCartItems);
             notification.success({
-              message: "Add succes please check cart!",
+              message: "Add success, please check cart!",
             });
           }
         }
@@ -140,13 +152,20 @@ function ProductItem(props: IProduct) {
         className="hover:translate-y-[-25px] transition duration-500 ease-in-out hover:scale-100 hover:rotate-0 cursor-pointer product-item p-[16px] bg-[#fff] border border-[#fbfbfb] rounded-[12px] shadow-[0_5px_22px_0_rgba(0,0,0,0.08)]"
       >
         <div className="bg-[#f9f9f9] rounded-[12px] flex justify-center relative">
+          <div className="cursor-pointer absolute top-[5px] right-[5px] bg-[#fff] border border-[#eaeaea] rounded-full flex justify-center p-[5px]">
+            <FacebookShareButton
+              url={`https://3537-2405-4802-9074-9d0-e09b-2b4-1e7e-80b0.ngrok-free.app//product/${product.key}`}
+            >
+              <FaShareAlt color="#EF2525" />
+            </FacebookShareButton>
+          </div>
           <div className="absolute rounded-[4px] flex justify-center items-center h-[20px] w-[44px] text-[12px] top-[5px] left-[5px] bg-[#a3bf4c] p-[4px] text-white">
             {product.discount}%
           </div>
           <img src={product.foodImage} className="w-[235px] h-[220px]" />
         </div>
         <div
-          className="product-info"
+          className="product-info" 
           onClick={() => {
             handleProductClick(product.key.toString());
           }}
@@ -156,11 +175,7 @@ function ProductItem(props: IProduct) {
           </h3>
           {/* rate */}
           <div className="flex flex-row gap-5">
-            <p className="text-[#9d9d9d] text-[13px]">1 cái</p>
-            <p className="text-[#9d9d9d] text-[13px] flex flex-row items-center gap-1">
-              <BsStarFill color="#ffc43f" />
-              4.5
-            </p>
+            <p className="text-[#9d9d9d] text-[13px]">1 item</p>
           </div>
           {/* price */}
           <div className="flex flex-row gap-5 items-end ">
@@ -168,7 +183,7 @@ function ProductItem(props: IProduct) {
               {product.foodPrice}đ
             </p>
             <p className="product-price font-semibold text-[#222] text-[20px]">
-              {discount}đ
+              {discountPrice}
             </p>
           </div>
         </div>

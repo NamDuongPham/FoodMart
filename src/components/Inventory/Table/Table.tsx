@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { TableProps } from "antd";
 import { Table, Tag } from "antd";
-import { format } from "date-fns";
+
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { GrFormView } from "react-icons/gr";
@@ -64,7 +64,7 @@ function TableProduct({ product }: TableProductProps) {
       render: (stock) => {
         let color;
 
-        if (stock === "true") {
+        if (stock === "In Stock") {
           color = "green";
         } else {
           color = "red";
@@ -217,6 +217,10 @@ function TableProduct({ product }: TableProductProps) {
               <p style={{ margin: 0 }} className="flex gap-2 text-lg">
                 <span className="text-red-500 font-semibold">Description:</span>
                 {record.foodDescription}
+              </p>
+              <p style={{ margin: 0 }} className="flex gap-2 text-lg">
+                <span className="text-red-500 font-semibold">Ingredient:</span>
+                {record.foodIngredient}
               </p>
             </>
           ),

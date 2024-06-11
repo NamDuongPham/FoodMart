@@ -7,7 +7,7 @@ interface DataType {
   foodImage: string;
   foodIngredient: string;
   foodPrice: string;
-  discount:number;
+  discount: number;
   categoryId: string;
   typeOfDishId: string;
   bestSeller: boolean;
@@ -15,6 +15,8 @@ interface DataType {
   inStock: boolean;
 }
 function ProductList({ product }: { product: DataType[] }) {
+
+  
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const productChunks = product.reduce<DataType[][]>(
     (resultArray, item, index) => {

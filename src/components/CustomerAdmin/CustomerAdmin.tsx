@@ -48,7 +48,7 @@ function CustomerAdmin() {
     },
     {
       title: "Phone",
-      dataIndex: "phoneCustommer",
+      dataIndex: "phoneNumberCustomer",
       key: "phone",
       render: (text) => (
         <p className="text-center text-[15px] font-semibold">{text}</p>

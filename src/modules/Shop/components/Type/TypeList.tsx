@@ -40,10 +40,10 @@ function TypeList() {
             .filter(([key, value]: [string, any]) => {
               if (category) {
                 return (
-                  value.typeOfDishId === category && value.categoryId === type
+                  value.typeOfDishId === category && value.categoryId === type && value.inStock === true
                 );
               }
-              return value.categoryId === type;
+              return value.categoryId === type && value.inStock === true;
             })
             .map(([key, value]) => ({
               key,

@@ -26,28 +26,7 @@ interface DataType {
 }
 function SearchResult() {
   const [product, setProduct] = useState<DataType[]>([]);
-  useEffect(() => {
-    // Fetch data from Firebase Realtime Database
-    const fetchFood = async () => {
-      try {
-        const dbRef = ref(db, "menu");
-        const snapshot = await get(dbRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const products = Object.keys(data).map((key) => {
-            return Object.assign({ key: key }, data[key]) as DataType;
-          });
-          setProduct(products);
-        } else {
-          throw new Error("No foods found!");
-        }
-      } catch (error) {
-        console.error("Error fetching foods: ", error);
-      }
-    };
 
-    fetchFood();
-  }, []);
   //useTitle(SITE_MAP.SEARCH.title);
   const navigate = useNavigate();
   const handleClickToHome = () => {
@@ -62,6 +41,32 @@ function SearchResult() {
       setLoading(false);
     }, 2000);
   }, []);
+  useEffect(() => {
+    // Fetch data from Firebase Realtime Database
+    const fetchFood = async () => {
+      try {
+        const dbRef = ref(db, "menu");
+        const snapshot = await get(dbRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const products = Object.keys(data).map((key) => {
+            return Object.assign({ key: key }, data[key]) as DataType;
+          });
+          const filteredProducts = products.filter((product) =>
+            product.foodName.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          setProduct(filteredProducts);
+        } else {
+          throw new Error("No foods found!");
+        }
+      } catch (error) {
+        console.error("Error fetching foods: ", error);
+      }
+    };
+
+    fetchFood();
+  }, []);
+
   return (
     <>
       {loading ? (
@@ -98,13 +103,7 @@ function SearchResult() {
               2 results found for “{searchTerm}”
             </p>
             <div className="mt-10">
-              <ProductList
-                product={product.filter((product) =>
-                  product.foodName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                )}
-              />
+              <ProductList product={product} />
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { db } from "@/firebase";
 import { Card } from "antd";
 import { format } from "date-fns";
 import { get, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEllipsisV, FaRegCalendarMinus } from "react-icons/fa";
 import { ImSpinner11 } from "react-icons/im";
 import {
@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import PieComponent from "../PieComponent/PieComponent";
 import PieCategory from "../PieComponent/PieCategory";
+import { PiChartLineDownBold, PiChartLineUpBold } from "react-icons/pi";
 
 interface DataType {
   key: React.Key;
@@ -35,6 +36,15 @@ function MainAdmin() {
     yearly: "0",
     monthly: "0",
     daily: "0",
+  });
+  const [percent, setPercent] = useState<{
+    yearly: string | React.ReactNode;
+    monthly: string | React.ReactNode;
+    daily: string | React.ReactNode;
+  }>({
+    yearly: "",
+    monthly: "",
+    daily: "",
   });
   const [order, setOrder] = useState<DataType[]>([]);
   const fetchOrder = async () => {
@@ -66,6 +76,43 @@ function MainAdmin() {
       let yearly = 0;
       let monthly = 0;
       let daily = 0;
+      // Tạo các biến để lưu trữ giá trị của năm, tháng, ngày trước
+      let prevYearlyTotal = 0;
+      let prevMonthlyTotal = 0;
+      let prevDailyTotal = 0;
+
+      // Lọc các đơn hàng của năm, tháng, ngày trước
+      const prevYearOrders = order.filter(
+        (item) =>
+          new Date(item.currentTime).getFullYear() ===
+          new Date().getFullYear() - 1
+      );
+      const prevMonthOrders = order.filter(
+        (item) =>
+          new Date(item.currentTime).getMonth() === new Date().getMonth() - 1 &&
+          new Date(item.currentTime).getFullYear() === new Date().getFullYear()
+      );
+      const prevDayOrders = order.filter(
+        (item) =>
+          new Date(item.currentTime).getDate() === new Date().getDate() - 1 &&
+          new Date(item.currentTime).getMonth() === new Date().getMonth() &&
+          new Date(item.currentTime).getFullYear() === new Date().getFullYear()
+      );
+
+      // Tính tổng doanh thu của năm, tháng, ngày trước
+      prevYearlyTotal = prevYearOrders.reduce(
+        (acc, item) => acc + Number(item.totalPrice),
+        0
+      );
+      prevMonthlyTotal = prevMonthOrders.reduce(
+        (acc, item) => acc + Number(item.totalPrice),
+        0
+      );
+      prevDailyTotal = prevDayOrders.reduce(
+        (acc, item) => acc + Number(item.totalPrice),
+        0
+      );
+      // console.log(prevYearlyTotal, prevMonthlyTotal, prevDailyTotal);
 
       order.forEach((item) => {
         total += Number(item?.totalPrice);
@@ -90,7 +137,22 @@ function MainAdmin() {
         daily +=
           currentDay === new Date().getDate() ? Number(item.totalPrice) : 0;
       });
+      //
+      const yearlyPercentChange = calculatePercentChange(
+        yearly,
+        prevYearlyTotal
+      );
+      const monthlyPercentChange = calculatePercentChange(
+        monthly,
+        prevMonthlyTotal
+      );
+      const dailyPercentChange = calculatePercentChange(daily, prevDailyTotal);
 
+      setPercent({
+        yearly: yearlyPercentChange,
+        monthly: monthlyPercentChange,
+        daily: dailyPercentChange,
+      });
       setEarningsData({
         total: total.toLocaleString(),
         yearly: yearly.toLocaleString(),
@@ -100,7 +162,30 @@ function MainAdmin() {
     }
   }, [order]);
   // console.log(order);
-
+  const calculatePercentChange = (currentValue: number, prevValue: number) => {
+    if (prevValue === 0) {
+      return currentValue === 0 ? (
+        "0%"
+      ) : (
+        <span className="text-green-500 font-bold flex items-center gap-3">
+          100% <PiChartLineUpBold />
+        </span>
+      );
+    }
+    const percentChange = Number(
+      ((currentValue - prevValue) / prevValue) * 100
+    );
+    const formattedPercentChange = `${Math.floor(percentChange)}%`;
+    return percentChange >= 0 ? (
+      <span className="text-green-500 flex items-center gap-3">
+        {`+${formattedPercentChange}`} <PiChartLineUpBold />
+      </span>
+    ) : (
+      <span className="text-red-500 flex items-center gap-3">
+        {`${formattedPercentChange}`} <PiChartLineDownBold />
+      </span>
+    );
+  };
   const [displayMode, setDisplayMode] = useState("monthly");
   const generateData = () => {
     if (displayMode === "monthly") {
@@ -173,20 +258,6 @@ function MainAdmin() {
       </div>
       <div className="grid grid-cols-4 gap-[30px] mt-[25px] pb-[15px]">
         <Card
-          className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#4E73DF] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
-          loading={loading}
-        >
-          <div>
-            <h2 className="text-[#B589DF] text-[11px] leading-[17px] font-bold">
-              EARNINGS (MONTHLY)
-            </h2>
-            <h1 className="text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]">
-              {earningsData.monthly} đ
-            </h1>
-          </div>
-          <FaRegCalendarMinus fontSize={28} color="" />
-        </Card>
-        <Card
           className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#1CC88A] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
           loading={loading}
         >
@@ -198,7 +269,27 @@ function MainAdmin() {
               {earningsData.yearly} đ
             </h1>
           </div>
-          <FaRegCalendarMinus fontSize={28} />
+          <div className="flex items-center gap-3">
+            <FaRegCalendarMinus fontSize={28} />{" "}
+            <span className="text-xl">{percent.yearly}</span>
+          </div>
+        </Card>
+        <Card
+          className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#4E73DF] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
+          loading={loading}
+        >
+          <div>
+            <h2 className="text-[#B589DF] text-[11px] leading-[17px] font-bold">
+              EARNINGS (MONTHLY)
+            </h2>
+            <h1 className="text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]">
+              {earningsData.monthly} đ
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <FaRegCalendarMinus fontSize={28} />{" "}
+            <span className="text-xl">{percent.monthly}</span>
+          </div>
         </Card>
         <Card
           className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#36B9CC] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
@@ -212,7 +303,10 @@ function MainAdmin() {
               {earningsData.daily} đ
             </h1>
           </div>
-          <FaRegCalendarMinus fontSize={28} />
+          <div className="flex items-center gap-3">
+            <FaRegCalendarMinus fontSize={28} />{" "}
+            <span className="text-xl">{percent.daily}</span>
+          </div>
         </Card>
         <Card
           className=" h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#F6C23E] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out"
@@ -229,7 +323,7 @@ function MainAdmin() {
           <FaRegCalendarMinus fontSize={28} />
         </Card>
       </div>
-      <div className="flex mt-[22px] w-full gap-[30px]">
+      <div className=" mt-[22px]">
         <div className=" border bg-white shadow-md cursor-pointer rounded-[4px]">
           <div className="bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED] mb-[20px]">
             <h2 className="text-[#4e73df] text-[16px] leading-[19px] font-bold">
@@ -237,7 +331,7 @@ function MainAdmin() {
             </h2>
             <FaEllipsisV color="gray" className="cursor-pointer" />
           </div>
-          <div>
+          <div className="p-[20px]">
             <label className="mr-2">
               <input
                 type="radio"
@@ -246,7 +340,7 @@ function MainAdmin() {
                 checked={displayMode === "monthly"}
                 onChange={() => setDisplayMode("monthly")}
               />
-              Theo tháng
+              Monthly
             </label>
             <label>
               <input
@@ -256,14 +350,14 @@ function MainAdmin() {
                 checked={displayMode === "weekly"}
                 onChange={() => setDisplayMode("weekly")}
               />
-              Theo tuần
+              Weekly
             </label>
           </div>
           <div className="w-full">
             {/* <canvas id="myAreaChart"></canvas> */}
             {/* <Line options={options} data={data} /> */}
             <LineChart
-              width={1620}
+              width={1300}
               height={500}
               data={generateData()}
               margin={{

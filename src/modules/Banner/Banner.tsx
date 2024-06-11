@@ -1,11 +1,14 @@
+import Image1 from "@/assets/images/Image1.png";
+import icecream from "@/assets/images/icecream.png";
+import socola from "@/assets/images/socola.png";
 import { Carousel } from "antd";
-import "./Banner.css";
-import Aos from "aos"
-import "aos/dist/aos.css"
+import Aos from "aos";
+import "aos/dist/aos.css";
 import { useEffect } from "react";
+import "./Banner.css";
 function Banner() {
   useEffect(()=>{
-    Aos.init({duration:3000})
+    Aos.init({duration:2000})
   },[])
   return (
     <div className="container mx-auto py-[107px] gap-5 flex flex-row justify-evenly">
@@ -26,7 +29,7 @@ function Banner() {
               </button>
             </div>
             <div className="max-w-[336px]">
-              <img src="/images/Image1.png" alt="banner" />
+              <img src={Image1} alt="banner" />
               {/* <img src="/images/bannertest.png" alt="banner" /> */}
 
             </div>
@@ -45,7 +48,7 @@ function Banner() {
               </button>
             </div>
             <div className="max-w-[536px] ">
-              <img src="/images/socola.png" alt="banner" />
+              <img src={socola} alt="banner" />
             </div>
           </div>
         </div>
@@ -64,7 +67,7 @@ function Banner() {
               </button>
             </div>
             <div className="max-w-[736px]">
-              <img src="/images/icecream.png" alt="banner" />
+              <img src={icecream} alt="banner" />
               
             </div>
           </div>
@@ -73,7 +76,7 @@ function Banner() {
 
       {/* left */}
       <div className="flex flex-col justify-between  w-[40%]  gap-5">
-        <div className="flex flex-row justify-around rounded-[12px] w-full h-full py-[20px] bg-[#EEF5E4] bg-no-repeat bg-[url('/images/image2.png')] bg-right-bottom" data-aos="fade-left">
+        <div className={`flex flex-row justify-around rounded-[12px] w-full h-full py-[20px] bg-[#EEF5E4] bg-no-repeat bg-[url('assets/images/image2.png')] bg-right-bottom`} data-aos="fade-right">
           <div className="flex flex-col justify-evenly items-start mr-[170px]">
             <p className="text-[#222] text-[25px]">20% Off</p>
             <h3 className="text-[#222] font-semibold text-[30px]">
@@ -82,7 +85,7 @@ function Banner() {
             <p className="text-[#222] text-[16px]">Shop the category</p>
           </div>
         </div>
-        <div className="flex flex-row justify-around rounded-[12px] w-full h-full py-[20px] bg-[#F9ECDE] bg-no-repeat bg-[url('/images/bakery1.png')] bg-right-bottom" data-aos="fade-left">
+        <div className={`flex flex-row justify-around rounded-[12px] w-full h-full py-[20px] bg-[#F9ECDE] bg-no-repeat bg-[url('assets/images/bakery1.png')] bg-right-bottom`} data-aos="fade-right">
           <div className="flex flex-col justify-evenly items-start mr-[170px]">
             <p className="text-[#222] text-[25px]">20% Off</p>
             <h3 className="text-[#222] font-semibold text-[30px]">

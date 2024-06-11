@@ -72,21 +72,6 @@ export const Router = () => {
         <Route path={SITE_MAP.CUSTOMER.url} element={<CustomerAdmin />} />
         <Route path={SITE_MAP.CONTACTCUSTOMER.url} element={<ContactAdmin />} />
       </Route>
-
-      {/* <-------------layout admin--------------------> */}
-      {/* <Route path={SITE_MAP.ADMIN.url} element={<AdminLayout />}>
-        <Route path={SITE_MAP.ADMIN.url} element={<MainAdmin />} />
-        <Route path={SITE_MAP.INVENTORY.url} element={<Inventory />} />
-        <Route path={SITE_MAP.ADD.url} element={<AddProduct />} />
-        <Route path={SITE_MAP.TYPE.url} element={<TypeAdmin />} />
-        <Route path={SITE_MAP.CATEGORY.url} element={<CategoryAdmin />} />
-        <Route path={SITE_MAP.ORDER.url} element={<OrderAdmin />} />
-        <Route path={SITE_MAP.ORDERDETAIL.url} element={<OrderDetailAdmin />} />
-        <Route path={SITE_MAP.REVIEW.url} element={<ReviewsAdmin />} />
-        <Route path={SITE_MAP.PROFILE.url} element={<Profile />} />
-        <Route path={SITE_MAP.CUSTOMER.url} element={<CustomerAdmin />} />
-        <Route path={SITE_MAP.CONTACTCUSTOMER.url} element={<ContactAdmin />} />
-      </Route> */}
     </Routes>
   );
 };

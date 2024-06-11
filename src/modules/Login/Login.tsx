@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, notification } from "antd";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword ,signInWithPopup} from "firebase/auth";
 import { ChangeEvent, useState } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
@@ -10,13 +10,16 @@ import { useDispatch } from "react-redux";
 import { updateUser } from "@/stores/slices/UserSlice";
 
 interface IProps {
-  setIsOpen?: (open: boolean) => void;
+  setIsOpen: (open: boolean) => void;
 }
 function Login(props: IProps) {
+  const googleProvider = new GoogleAuthProvider();
+  const { setIsOpen } = props;
   const dispatch = useDispatch();
   const [isOpenModalRegister, setIsOpenModalRegister] = useState(false);
   const openModalRegister = () => {
     setIsOpenModalRegister(true);
+    setIsOpen(false);
   };
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [email, setEmail] = useState<string>("");
@@ -32,7 +35,7 @@ function Login(props: IProps) {
       });
       dispatch(
         updateUser({
-          uid:user.uid!,
+          uid: user.uid!,
           email: user.email!,
           name: user.displayName!,
           phone: user.phoneNumber!,
@@ -42,7 +45,33 @@ function Login(props: IProps) {
       );
     });
   };
-
+  const handleGoogleLogin = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+  
+        props.setIsOpen && props.setIsOpen(false);
+        notification.success({
+          message: "Login with Google success!",
+        });
+        dispatch(
+          updateUser({
+            uid: user.uid,
+            email: user.email!,
+            name: user.displayName!,
+            phone: user.phoneNumber!,
+            token: user.refreshToken,
+            address: "",
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("Google Login error:", error);
+        notification.error({
+          message: "Google Login failed!",
+        });
+      });
+  };
   return (
     <>
       <div>
@@ -99,7 +128,7 @@ function Login(props: IProps) {
             or
           </div>
           <div className="flex flex-col gap-4 mt-3">
-            <Button icon={<FcGoogle />}>Login with Google</Button>
+            <Button icon={<FcGoogle />} onClick={handleGoogleLogin}>Login with Google</Button>
             <Button icon={<AiFillGithub />}>Login with Github</Button>
             <div
               className="
@@ -111,6 +140,7 @@ function Login(props: IProps) {
                   className="
               text-neutral-800
               cursor-pointer 
+              text-xl
               hover:underline
             "
                   onClick={openModalRegister}

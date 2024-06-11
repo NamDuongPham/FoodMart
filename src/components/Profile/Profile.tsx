@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SITE_MAP } from "../../constants/site-map";
 import { useTitle } from "../../hooks/useTitle";
 import { RootStatesType } from "@/stores";
+import imageLogo  from "@/assets/images/profile.png"
 interface Admin {
   id: React.Key;
   name: string;
@@ -96,7 +97,7 @@ function Profile() {
         <div className="basis-1/3">
           <Card style={{ width: 350 }}>
             <div className="flex flex-col  items-center">
-              <img className="w-[110px]" src="../images/profile.png" alt="" />
+              <img className="w-[110px]" src={imageLogo} alt="" />
               <h2 className="text-[25px] font-bold">{admin?.name}</h2>
               <p className="bg-[#ff5470] px-3 text-white font-bold rounded-md">
                 Admin

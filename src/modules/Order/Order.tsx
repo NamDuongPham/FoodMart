@@ -7,7 +7,7 @@ import InfoOrder from "./components/InfoOrder";
 import InfoShipping from "./components/InfoShipping";
 import { useEffect, useState } from "react";
 import { get, ref } from "firebase/database";
-import { db } from "@/firebase";
+import { auth, db } from "@/firebase";
 import InfoPending from "./components/InfoPending";
 interface DataType {
   key: React.Key;
@@ -32,6 +32,7 @@ function Order() {
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true);
+      const customerId = auth?.currentUser?.uid
       try {
         const dbRef = ref(db, "OrderDetails");
         const snapshot = await get(dbRef);
@@ -40,7 +41,8 @@ function Order() {
           const orders = Object.keys(data).map((key) => {
             return Object.assign({ key: key }, data[key]) as DataType;
           });
-          setOrders(orders);
+          const ordered = orders.filter((order)=>order.customerId === customerId)
+          setOrders(ordered);
         } else {
           throw new Error("No orders found!");
         }
@@ -52,6 +54,8 @@ function Order() {
     };
     fetchOrders();
   }, []);
+  // console.log(orders);
+  
   const getOrdersByStatus = (status: string) => {
     return orders.filter((order) => order.deliveryStatus === status);
   };

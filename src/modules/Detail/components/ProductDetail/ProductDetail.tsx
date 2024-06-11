@@ -2,19 +2,23 @@ import Loading from "@/components/Loading/Loading";
 import { auth, db } from "@/firebase";
 import { Product } from "@/types/Product";
 import { Image } from "antd";
-import { get, ref, update } from "firebase/database";
+import { get, onValue, ref, update } from "firebase/database";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { BsArrowLeftCircle, BsStarFill } from "react-icons/bs";
 import { MdCategory } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { SITE_MAP } from "../../../../constants/site-map";
+import { IComment } from "@/types/Comment";
 function ProductDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState<Product | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [foodQuantity, setFoodQuantity] = useState(1);
+  const [comments, setComments] = useState<IComment[]>([]);
+  const [averageRating, setAverageRating] = useState(0);
+
   const handleDecrease = () => {
     if (foodQuantity > 1) {
       setFoodQuantity(foodQuantity - 1);
@@ -24,6 +28,43 @@ function ProductDetail() {
   const handleIncrease = () => {
     setFoodQuantity(foodQuantity + 1);
   };
+
+  const ingredients = product?.foodIngredient.split(", ");
+  const [showAllIngredients, setShowAllIngredients] = useState(false);
+  const visibleIngredients = showAllIngredients
+    ? ingredients
+    : ingredients?.slice(0, 5);
+  const hiddenIngredients = ingredients?.slice(5);
+  const handleShowMoreIngredients = () => {
+    setShowAllIngredients(!showAllIngredients);
+  };
+  useEffect(() => {
+    const commentsRef = ref(db, "comments");
+    onValue(commentsRef, (snapshot) => {
+      const commentsData = snapshot.val();
+      if (commentsData) {
+        const commentsList = Object.entries(commentsData).map(
+          ([key, value]) => ({
+            key,
+            ...value,
+          })
+        );
+        const comment = commentsList.filter((cmt) => cmt.productID === id);
+        setComments(comment);
+
+        // console.log(comment);
+        const totalRating = comment.reduce(
+          (acc, comment) => acc + comment.star,
+          0
+        );
+        const totalComments = comment.length;
+        const averageRating = (Number(totalRating) / totalComments).toFixed(0);
+        setAverageRating(Number(averageRating));
+      } else {
+        setComments([]);
+      }
+    });
+  }, []);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -82,7 +123,7 @@ function ProductDetail() {
   const handleClickToShop = () => {
     navigate(SITE_MAP.SHOP.url);
   };
-  const rating = 3;
+  const rating = averageRating;
 
   const stars = [];
   for (let i = 0; i < 5; i++) {
@@ -121,7 +162,6 @@ function ProductDetail() {
     .unix(remainingTime)
     .format("DD [days] HH [hours] mm [minutes]");
   const isDiscounted = remainingTime > 0 && product.discount > 0;
-
 
   return (
     <div className="container mx-auto">
@@ -248,6 +288,34 @@ function ProductDetail() {
                 height="333px"
                 src={product?.foodImage}
               />
+            </div>
+            {/*  */}
+            <div>
+              <div className="p-4">
+                <h2 className="ml-4 text-2xl font-bold">INGREDIENTS</h2>
+                <table className="w-full">
+                  <tbody>
+                    {visibleIngredients.map((ingre, index) => (
+                      <tr key={index} className="">
+                        <td className="py-2 px-4 border-solid border-b border-t border-r border-red-400">
+                          <span className="text-[#123829] dark:text-zinc-200 text-lg">
+                            {ingre}
+                          </span>
+                        </td>
+                        <td className="py-2 px-6 border-solid border-b border-t border-red-400"></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {hiddenIngredients.length > 0 && (
+                  <button
+                    onClick={handleShowMoreIngredients}
+                    className="mt-4 bg-gradient-to-br from-[#E85353] to-[#BE1515] cursor-pointer text-white"
+                  >
+                    {!showAllIngredients ? "More" : "Close"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </>

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { FaEnvelope, FaRegBell, FaSearch } from "react-icons/fa";
 import { SITE_MAP } from "../../constants/site-map";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetAdmin } from "@/stores/slices/AdminSlice";
 
 function Dashboard() {
   const [open, setOpen] = useState(false);
@@ -12,6 +14,10 @@ function Dashboard() {
   const showProfile = () => {
     // alert("helloo")
     setOpen(!open);
+  };
+  const dispatch = useDispatch();
+  const logOut = () => {
+    dispatch(resetAdmin());
   };
   return (
     <div className="">
@@ -55,7 +61,12 @@ function Dashboard() {
                   Settings
                 </p>
 
-                <p className="cursor-pointer hover:text-[blue] font-semibold">
+                <p
+                  className="cursor-pointer hover:text-[blue] font-semibold"
+                  onClick={() => {
+                    logOut();
+                  }}
+                >
                   Log out
                 </p>
               </div>

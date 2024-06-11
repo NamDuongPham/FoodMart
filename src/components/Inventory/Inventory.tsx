@@ -1,5 +1,5 @@
 import { db } from "@/firebase";
-import { Input, Select, Spin } from "antd";
+import { Form, Input, Select, Spin } from "antd";
 import { format } from "date-fns";
 import { get, ref } from "firebase/database";
 import { SetStateAction, useEffect, useState } from "react";
@@ -94,7 +94,7 @@ function Inventory() {
     }
   };
 
-  console.log(product);
+  // console.log(product);
   useEffect(() => {
     fetchType();
     fetchFood();
@@ -138,7 +138,7 @@ function Inventory() {
     key: item.key, // Hoặc một giá trị duy nhất khác để làm key
     foodName: item.foodName,
     foodImage: item.foodImage,
-    inStock: item.inStock ? "true" : "false",
+    inStock: item.inStock ? "In Stock" : "Out of Stock",
     foodPrice: parseFloat(item.foodPrice),
     foodDescription: item.foodDescription,
     foodIngredient: item.foodIngredient,
@@ -154,7 +154,7 @@ function Inventory() {
       item.trending ? "Trending" : "",
     ],
   }));
-  console.log(mappedProduct);
+  // console.log(mappedProduct);
 
   const clearHandle = () => {
     setInventoryFilter("");
@@ -203,100 +203,113 @@ function Inventory() {
       </div>
       {/* FILTER */}
       <div className="md:mb-[26px] md:!p-[26px] lg:!py-1 flex justify-between">
-        <Select
-          value={inventoryFilter}
-          onChange={(value) => setInventoryFilter(value)}
-          showSearch
-          style={{ width: 200, height: 50, fontSize: "20px" }}
-          placeholder="Inventory"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
-          options={[
-            {
-              value: "1",
-              label: "true",
-            },
-            {
-              value: "2",
-              label: "false",
-            },
-          ]}
-        />
-        <Select
-          value={categoryFilter}
-          onChange={(value) => setCategoryFilter(value)}
-          showSearch
-          style={{ width: 200, height: 50, fontSize: "20px" }}
-          placeholder="Product Category"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
-          options={categories.map((category) => ({
-            value: category.category_name,
-            label: category.category_name,
-          }))}
-        />
-        <Select
-          value={typeFilter}
-          onChange={(value) => setTypeFilter(value)}
-          showSearch
-          style={{ width: 200, height: 50, fontSize: "20px" }}
-          placeholder="Product Type"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
-          options={type.map((t) => ({
-            value: t.typeOfDishName,
-            label: t.typeOfDishName,
-          }))}
-        />
+        <div className="flex flex-col gap-2">
+          <div className="text-xl">Inventory</div>
+          <Select
+            value={inventoryFilter}
+            onChange={(value) => setInventoryFilter(value)}
+            showSearch
+            style={{ width: 200, height: 50, fontSize: "20px" }}
+            placeholder={<span>Inventory</span>}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.value ?? "").includes(input)
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.value ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.value ?? "").toLowerCase())
+            }
+            options={[
+              {
+                value: "1",
+                label: "In Stock",
+              },
+              {
+                value: "2",
+                label: "Out of Stock",
+              },
+            ]}
+          />
+        </div>
 
-        <Select
-          value={sellerFilter}
-          onChange={(value) => setSellerFilter(value)}
-          showSearch
-          style={{ width: 200, height: 50, fontSize: "20px" }}
-          placeholder="Product Selller"
-          optionFilterProp="children"
-          filterOption={(input, option) =>
-            (option?.label ?? "").includes(input)
-          }
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
-          options={[
-            {
-              value: "1",
-              label: "Best Seller",
-            },
-            {
-              value: "2",
-              label: "Trending",
-            },
-          ]}
-        />
-        <div className="flex gap-5">
+        <div className="flex flex-col gap-2">
+          <div className="text-xl">Category</div>
+          <Select
+            value={categoryFilter}
+            onChange={(value) => setCategoryFilter(value)}
+            showSearch
+            style={{ width: 200, height: 50, fontSize: "20px" }}
+            placeholder="Product Category"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").includes(input)
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={categories.map((category) => ({
+              value: category.category_name,
+              label: category.category_name,
+            }))}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="text-xl">Type</div>
+          <Select
+            value={typeFilter}
+            onChange={(value) => setTypeFilter(value)}
+            showSearch
+            style={{ width: 200, height: 50, fontSize: "20px" }}
+            placeholder="Product Type"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").includes(input)
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={type.map((t) => ({
+              value: t.typeOfDishName,
+              label: t.typeOfDishName,
+            }))}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <div className="text-xl">Best seller/ Trending</div>
+          <Select
+            value={sellerFilter}
+            onChange={(value) => setSellerFilter(value)}
+            showSearch
+            style={{ width: 200, height: 50, fontSize: "20px" }}
+            placeholder="Product Selller"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").includes(input)
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={[
+              {
+                value: "1",
+                label: "Best Seller",
+              },
+              {
+                value: "2",
+                label: "Trending",
+              },
+            ]}
+          />
+        </div>
+        <div className=" flex flex-col justify-center">
           {/* <button className="bg-[#035ecf] text-white rounded-[30px] px-10">
             Apply
           </button> */}
